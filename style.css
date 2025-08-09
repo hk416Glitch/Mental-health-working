@@ -1,63 +1,44 @@
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    color: white;
-    text-align: center;
-    overflow: hidden;
+:root{
+  --bg-dim: rgba(0,0,0,0.45);
+  --accent: #6fbfbb;
+  --muted: rgba(255,255,255,0.8);
+  --card-bg: rgba(15,23,30,0.6);
 }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#000;color:#fff}
+#bg-layer{
+  position:fixed;inset:0;background-size:cover;background-position:center;z-index:-2;opacity:1;transition:opacity 1.2s ease-in-out;
+}
+.header{display:flex;align-items:center;gap:12px;padding:14px;background:linear-gradient(0deg,rgba(0,0,0,0.55),transparent)}
+.app-icon{width:48px;height:48px;border-radius:8px;object-fit:cover}
+.container{padding:14px;max-width:980px;margin:0 auto}
+.card{background:var(--card-bg);padding:14px;border-radius:12px;margin:12px 0;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+button:hover{background:rgba(255,255,255,0.12)}
+input,select,textarea{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:#fff}
+.quote{font-style:italic;font-size:1.1rem;margin:12px auto;color:var(--muted)}
+.list{list-style:none;padding-left:0;margin:0}
+.list li{padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.04)}
+.muted{color:rgba(255,255,255,0.7);font-size:0.9rem}
+.small{max-width:680px;margin:12px auto}
+.hidden{display:none}
 
-#background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    z-index: -1;
-    transition: opacity 2s ease-in-out;
+/* Calendar grid */
+.calendar-controls{align-items:center;justify-content:space-between}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+.day-cell{
+  min-height:70px;background:rgba(255,255,255,0.03);border-radius:8px;padding:6px;cursor:pointer;position:relative
 }
+.day-num{position:absolute;top:6px;right:8px;font-size:0.85rem;opacity:0.8}
+.note-indicator{position:absolute;left:6px;bottom:6px;background:var(--accent);color:#042; padding:2px 6px;border-radius:6px;font-size:0.75rem}
 
-.content {
-    position: relative;
-    z-index: 1;
-    padding: 20px;
-}
+/* helpline styling */
+.helpline{text-align:center;background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4))}
+.footer{padding:12px;text-align:center;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.6));font-size:0.85rem}
 
-h1 {
-    margin-top: 30px;
-    font-size: 2.5rem;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-}
-
-#quote {
-    font-size: 1.3rem;
-    margin: 20px auto;
-    max-width: 600px;
-    font-style: italic;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
-}
-
-.menu button {
-    margin: 10px;
-    padding: 12px 20px;
-    border: none;
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.menu button:hover {
-    background: rgba(255,255,255,0.4);
-}
-
-.helplines {
-    margin-top: 40px;
-    font-size: 0.9rem;
-    background: rgba(0,0,0,0.4);
-    padding: 15px;
-    border-radius: 10px;
-}
+/* responsive */
+@media (max-width:600px){
+  .calendar-grid{grid-template-columns:repeat(7,calc(100%/7))}
+  .day-cell{min-height:64px}
+    }
