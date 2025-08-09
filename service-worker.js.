@@ -1,26 +1,71 @@
-const CACHE_NAME = 'mental-care-cache-v1';
-const ASSETS = [
-  'index.html',
-  'style.css',
-  'script.js',
-  'manifest.json',
-  'icon.png',
-  'bg-ocean1.jpg',
-  'bg-snow2.jpg',
-  'bg-ocean2.jpg'
+// Quotes array
+const quotes = [
+    "Every day may not be good, but there is something good in every day.",
+    "You are stronger than you think.",
+    "Small steps every day lead to big changes.",
+    "Your feelings are valid. You matter.",
+    "One day at a time."
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
-  );
+// Display a random quote
+function displayQuote() {
+    const quoteDisplay = document.getElementById("quote-display");
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    quoteDisplay.textContent = `"${quotes[randomIndex]}"`;
+}
+
+document.getElementById("new-quote-btn").addEventListener("click", displayQuote);
+
+// Sobriety Tracker
+const sobrietyStartInput = document.getElementById("sobriety-start");
+const sobrietyDaysDisplay = document.getElementById("sobriety-days");
+
+function updateSobrietyDays() {
+    const startDate = new Date(localStorage.getItem("sobrietyStart"));
+    if (!isNaN(startDate)) {
+        const today = new Date();
+        const diffTime = today - startDate;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        sobrietyDaysDisplay.textContent = `Days sober: ${diffDays}`;
+    }
+}
+
+sobrietyStartInput.addEventListener("change", () => {
+    localStorage.setItem("sobrietyStart", sobrietyStartInput.value);
+    updateSobrietyDays();
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
-  );
+if (localStorage.getItem("sobrietyStart")) {
+    sobrietyStartInput.value = localStorage.getItem("sobrietyStart");
+    updateSobrietyDays();
+}
+
+// Sleep Schedule Tracker
+document.getElementById("save-sleep").addEventListener("click", () => {
+    const sleepTime = document.getElementById("sleep-time").value;
+    const wakeTime = document.getElementById("wake-time").value;
+    localStorage.setItem("sleepTime", sleepTime);
+    localStorage.setItem("wakeTime", wakeTime);
+    alert("Sleep schedule saved!");
 });
+
+if (localStorage.getItem("sleepTime")) {
+    document.getElementById("sleep-time").value = localStorage.getItem("sleepTime");
+}
+if (localStorage.getItem("wakeTime")) {
+    document.getElementById("wake-time").value = localStorage.getItem("wakeTime");
+}
+
+// Fitness Log
+document.getElementById("save-fitness").addEventListener("click", () => {
+    const fitnessLog = document.getElementById("fitness-log").value;
+    localStorage.setItem("fitnessLog", fitnessLog);
+    alert("Fitness log saved!");
+});
+
+if (localStorage.getItem("fitnessLog")) {
+    document.getElementById("fitness-log").value = localStorage.getItem("fitnessLog");
+}
+
+// Initial load
+displayQuote();
