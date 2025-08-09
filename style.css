@@ -1,62 +1,28 @@
+/* Background styling */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
-    overflow-x: hidden;
+    padding: 0;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    transition: background-image 1.5s ease-in-out;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.background {
+/* Optional: dark overlay to improve text readability */
+body::before {
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
+    background: rgba(0,0,0,0.2); /* adjustable overlay darkness */
     z-index: -1;
-    transition: background-image 1.5s ease-in-out;
 }
 
-header {
-    padding: 20px;
-    background-color: rgba(0,0,0,0.5);
-}
-
-section {
-    padding: 15px;
-    margin: 20px auto;
-    background-color: rgba(0,0,0,0.5);
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-}
-
-select, input, button {
-    padding: 8px;
-    margin: 5px;
-    border-radius: 5px;
-    border: none;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-canvas {
-    max-width: 100%;
-    height: 200px !important;
-}
-
-footer {
-    margin-top: 30px;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.5);
-    font-size: 14px;
-}
+/* Text styling so it’s readable on all backgrounds */
+h1, h2, h3, p, label, span {
+    color: #ffffff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5
