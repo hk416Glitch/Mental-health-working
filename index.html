@@ -1,52 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mental Care Health</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mental Care Health</title>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <img src="icon.png" alt="App Icon" class="app-icon" />
-    <h1>Mental Care Health</h1>
-  </header>
+    <header class="header">
+        <img src="icon.png" alt="App Icon" class="app-icon" />
+        <h1>Mental Care Health</h1>
+    </header>
 
-  <main>
-    <section id="quote-section">
-      <h2>Positive Quote</h2>
-      <p id="quote">Loading...</p>
+    <!-- Hotline Box -->
+    <section class="hotline-box">
+        <h2>Need Immediate Help?</h2>
+        <p>If you are in crisis or feeling unsafe, please reach out:</p>
+        <ul>
+            <li><strong>988 Suicide & Crisis Lifeline (U.S.)</strong> — Call or Text 988</li>
+            <li><strong>Samaritans (UK & Ireland)</strong> — Call 116 123 (Freephone)</li>
+            <li><strong>Lifeline (Australia)</strong> — Call 13 11 14</li>
+        </ul>
     </section>
 
-    <section id="trackers">
-      <div class="tracker" id="sobriety-tracker">
-        <h3>Sobriety Tracker</h3>
-        <p id="sobriety-days">0 days</p>
-        <button onclick="resetSobriety()">Reset</button>
-      </div>
+    <!-- Positive Quote -->
+    <section class="quote-section">
+        <h2>Daily Positive Quote</h2>
+        <blockquote id="quote-display">"Every day may not be good, but there is something good in every day."</blockquote>
+        <button id="new-quote-btn">New Quote</button>
+    </section>
 
-      <div class="tracker" id="sleep-tracker">
-        <h3>Sleep Tracker</h3>
+    <!-- Your Existing Trackers -->
+    <section class="tracker-section">
+        <h2>Sobriety Tracker</h2>
+        <input type="date" id="sobriety-start" />
+        <p id="sobriety-days"></p>
+
+        <h2>Sleep Schedule</h2>
         <input type="time" id="sleep-time" />
         <input type="time" id="wake-time" />
-        <button onclick="saveSleep()">Save</button>
-      </div>
+        <button id="save-sleep">Save Sleep Schedule</button>
 
-      <div class="tracker" id="fitness-tracker">
-        <h3>Fitness Tracker</h3>
-        <input type="text" id="workout" placeholder="Workout done..." />
-        <button onclick="saveWorkout()">Save</button>
-      </div>
+        <h2>Fitness Log</h2>
+        <textarea id="fitness-log" placeholder="Log your workout..."></textarea>
+        <button id="save-fitness">Save</button>
     </section>
 
-    <!-- Crisis Helpline Box -->
-    <section id="helpline" class="tracker">
-      <h3>📞 Crisis Helpline</h3>
-      <p>If you need help, call <strong>988</strong> (U.S. Suicide & Crisis Lifeline).</p>
-      <p>Available 24/7 — you are never alone.</p>
-    </section>
-  </main>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
