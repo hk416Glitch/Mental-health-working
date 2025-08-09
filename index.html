@@ -1,78 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mental Care App</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="icon.png">
-</head>
-<body>
-    <div class="background"></div>
-    <header>
-        <h1>🌊 Mental Care Hub</h1>
-        <p>Your space for calm, balance, and growth</p>
-    </header>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Add your existing image filenames here
+    const images = [
+        "forest-1.jpg",
+        "forest-2.jpg",
+        "forest-3.jpg",
+        "dim-forest-1.jpg",
+        "dim-forest-2.jpg",
+        // New ones we just added:
+        "travel-1.jpg",
+        "rain-1.jpg",
+        "cloud.jpg"
+    ];
 
-    <!-- Positive Quote Section -->
-    <section class="quote-section">
-        <h2>🌟 Positive Quote</h2>
-        <p id="quote">"Stay positive, work hard, make it happen."</p>
-    </section>
+    const body = document.body;
 
-    <!-- Mood Selector -->
-    <section class="mood-section">
-        <h2>💬 How are you feeling?</h2>
-        <select id="moodSelect">
-            <option value="">Select your mood</option>
-            <option value="happy">😊 Happy</option>
-            <option value="sad">😢 Sad</option>
-            <option value="anxious">😰 Anxious</option>
-            <option value="angry">😡 Angry</option>
-            <option value="motivated">💪 Motivated</option>
-        </select>
-        <button id="moodBtn">Get Quote</button>
-    </section>
+    function changeBackground() {
+        const randomImage = images[Math.floor(Math.random() * images.length)];
+        body.style.backgroundImage = `url('images/${randomImage}')`;
+        body.style.backgroundSize = "cover";
+        body.style.backgroundPosition = "center";
+        body.style.transition = "background-image 1.5s ease-in-out";
+    }
 
-    <!-- Sobriety Tracker -->
-    <section class="tracker">
-        <h2>🚭 Sobriety Tracker</h2>
-        <p id="sobrietyDays">Days sober: 0</p>
-        <input type="date" id="sobrietyStart">
-        <button id="saveSobriety">Save Start Date</button>
-    </section>
-
-    <!-- Sleep Tracker -->
-    <section class="tracker">
-        <h2>😴 Sleep Tracker</h2>
-        <input type="number" id="sleepHours" placeholder="Hours slept">
-        <button id="saveSleep">Log Sleep</button>
-        <canvas id="sleepChart"></canvas>
-    </section>
-
-    <!-- Fitness Tracker -->
-    <section class="tracker">
-        <h2>🏋️ Fitness Tracker</h2>
-        <input type="number" id="fitnessMinutes" placeholder="Minutes exercised">
-        <button id="saveFitness">Log Workout</button>
-        <canvas id="fitnessChart"></canvas>
-    </section>
-
-    <!-- Calendar -->
-    <section class="tracker">
-        <h2>📅 Calendar</h2>
-        <input type="date" id="calendarDate">
-        <input type="text" id="calendarNote" placeholder="Note for this day">
-        <button id="saveCalendar">Save Event</button>
-        <ul id="calendarList"></ul>
-    </section>
-
-    <!-- Crisis Helpline -->
-    <footer>
-        <p>📞 Crisis Helpline: Call 988 (USA) | Samaritans: 116 123 (UK) | Lifeline: 13 11 14 (AU)</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
-</body>
-      </html>
+    // Change background every 8 seconds
+    changeBackground();
+    setInterval(changeBackground, 8000);
+});
+            </script>
