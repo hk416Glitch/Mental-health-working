@@ -1,32 +1,42 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const backgrounds = [
-        "bg-ocean-1.jpg",
-        "bg-ocean-2.jpg",
-        "bg-snow-2.jpg",
-        "clouds-1.jpg",
-        "travel-1.jpg",
-        "rain-1.jpg"
-    ];
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 1.5s ease-in-out;
+  color: white;
+  text-align: center;
+  min-height: 100vh;
+}
 
-    let currentIndex = 0;
-    const bgElement = document.body;
+header {
+  padding: 20px;
+}
 
-    // First image instantly
-    bgElement.style.backgroundImage = `url('${backgrounds[0]}')`;
+.app-icon {
+  width: 80px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+}
 
-    // Preload all backgrounds
-    backgrounds.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
+h1 {
+  margin: 0;
+}
 
-    // Rotate backgrounds with fade
-    setInterval(() => {
-        currentIndex = (currentIndex + 1) % backgrounds.length;
-        bgElement.classList.add("fade-out");
-        setTimeout(() => {
-            bgElement.style.backgroundImage = `url('${backgrounds[currentIndex]}')`;
-            bgElement.classList.remove("fade-out");
-        }, 500);
-    }, 10000); // every 10 seconds
-});
+main {
+  padding: 20px;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+.tracker {
+  background: rgba(0,0,0,0.5);
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px auto;
+  max-width: 300px;
+}
