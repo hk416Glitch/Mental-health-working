@@ -1,299 +1,78 @@
-      <h2>Workout Tracker</h2>
-      <div class="row">
-        <input id="workoutDate" type="date" />
-        <input id="workoutMinutes" type="number" min="0" placeholder="minutes"/>
-        <input id="workoutType" placeholder="type (run, yoga)"/>
-        <button onclick="logWorkout()">Log Workout</button>
-        <button onclick="clearWorkoutData()">Clear Workouts</button>
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Care App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+    <div class="background"></div>
+    <header>
+        <h1>🌊 Mental Care Hub</h1>
+        <p>Your space for calm, balance, and growth</p>
+    </header>
 
-      <h3>Chart (lazy)</h3>
-      <div class="chart-wrap" id="chartWrap">
-        <canvas id="workoutChart" width="400" height="220"></canvas>
-      </div>
-
-      <h3>Recent</h3>
-      <ul id="workoutList" class="list"></ul>
+    <!-- Positive Quote Section -->
+    <section class="quote-section">
+        <h2>🌟 Positive Quote</h2>
+        <p id="quote">"Stay positive, work hard, make it happen."</p>
     </section>
 
-    <!-- Mood -->
-    <section id="moodSection" class="card">
-      <h2>Mood Helper</h2>
-      <select id="moodSelect">
-        <option value="">Select mood</option>
-        <option value="stressed">Stressed</option>
-        <option value="sad">Sad</option>
-        <option value="anxious">Anxious</option>
-        <option value="angry">Angry</option>
-        <option value="calm">Calm</option>
-        <option value="happy">Happy</option>
-      </select>
-      <div class="row">
-        <button onclick="getMoodSuggestion()">Get suggestion</button>
-        <button onclick="saveMoodEntry()">Save mood</button>
-      </div>
-      <div id="moodSuggestion" class="quote"></div>
-      <h3>Mood history</h3>
-      <ul id="moodHistory" class="list"></ul>
+    <!-- Mood Selector -->
+    <section class="mood-section">
+        <h2>💬 How are you feeling?</h2>
+        <select id="moodSelect">
+            <option value="">Select your mood</option>
+            <option value="happy">😊 Happy</option>
+            <option value="sad">😢 Sad</option>
+            <option value="anxious">😰 Anxious</option>
+            <option value="angry">😡 Angry</option>
+            <option value="motivated">💪 Motivated</option>
+        </select>
+        <button id="moodBtn">Get Quote</button>
+    </section>
+
+    <!-- Sobriety Tracker -->
+    <section class="tracker">
+        <h2>🚭 Sobriety Tracker</h2>
+        <p id="sobrietyDays">Days sober: 0</p>
+        <input type="date" id="sobrietyStart">
+        <button id="saveSobriety">Save Start Date</button>
+    </section>
+
+    <!-- Sleep Tracker -->
+    <section class="tracker">
+        <h2>😴 Sleep Tracker</h2>
+        <input type="number" id="sleepHours" placeholder="Hours slept">
+        <button id="saveSleep">Log Sleep</button>
+        <canvas id="sleepChart"></canvas>
+    </section>
+
+    <!-- Fitness Tracker -->
+    <section class="tracker">
+        <h2>🏋️ Fitness Tracker</h2>
+        <input type="number" id="fitnessMinutes" placeholder="Minutes exercised">
+        <button id="saveFitness">Log Workout</button>
+        <canvas id="fitnessChart"></canvas>
     </section>
 
     <!-- Calendar -->
-    <section id="calendarSection" class="card">
-      <h2>Calendar</h2>
-      <div class="calendar-controls row">
-        <button onclick="prevMonth()">◀</button>
-        <div id="calendarMonthYear" style="flex:1;text-align:center"></div>
-        <button onclick="nextMonth()">▶</button>
-        <button onclick="gotoToday()">Today</button>
-      </div>
-      <div id="calendar" class="calendar-grid"></div>
-
-      <div id="dayEditor" class="card small hidden">
-        <h3 id="dayEditorTitle">Notes for —</h3>
-        <textarea id="dayNote" rows="4" placeholder="Add a note or milestone"></textarea>
-        <div class="row">
-          <button onclick="saveDayNote()">Save</button>
-          <button onclick="deleteDayNote()">Delete</button>
-          <button onclick="closeDayEditor()">Close</button>
-        </div>
-        <div id="dayNotesList"></div>
-      </div>
+    <section class="tracker">
+        <h2>📅 Calendar</h2>
+        <input type="date" id="calendarDate">
+        <input type="text" id="calendarNote" placeholder="Note for this day">
+        <button id="saveCalendar">Save Event</button>
+        <ul id="calendarList"></ul>
     </section>
 
-    <section class="card helpline">
-      <h3>Need Help Now?</h3>
-      <p><strong>US/Canada:</strong> 988 — Call or Text</p>
-      <p><strong>UK & Ireland:</strong> Samaritans 116 123</p>
-      <p><strong>Australia:</strong> Lifeline 13 11 14</p>
-      <p class="muted">If you are outside these regions, contact your local emergency services or health line.</p>
-    </section>
+    <!-- Crisis Helpline -->
+    <footer>
+        <p>📞 Crisis Helpline: Call 988 (USA) | Samaritans: 116 123 (UK) | Lifeline: 13 11 14 (AU)</p>
+    </footer>
 
-  </main>
-
-  <footer class="footer">
-    <small>All data stored locally on your device. This app is not a replacement for professional help.</small>
-  </footer>
-
-  <script>
-/* ----------------------------
-   Optimized app script (single file)
-   - lazy loads heavy resources
-   - preserves localStorage keys from earlier versions
-   ----------------------------*/
-
-/* ---------- Utilities & storage ---------- */
-const Storage = {
-  get(k, fallback){ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; },
-  set(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
-};
-
-/* ---------- Background & Home Quote (optimized lazy preload) ---------- */
-const BG_IMAGES = ["bg-ocean-1.jpg","bg-ocean-2.jpg","bg-snow-2.jpg"];
-let bgIndex = 0;
-const bgLayer = document.getElementById('bg-layer');
-const HOME_QUOTES = [
-  "You are stronger than you think.",
-  "This too shall pass.",
-  "Take it one step at a time.",
-  "Breathe in courage, breathe out fear.",
-  "Every day is a second chance.",
-  "You matter more than you know."
-];
-function showRandomHomeQuote(){
-  const el = document.getElementById('homeQuote'); if(!el) return;
-  el.textContent = HOME_QUOTES[Math.floor(Math.random()*HOME_QUOTES.length)];
-}
-
-/* Preload next image just-in-time to reduce memory & bandwidth */
-function preloadImage(src){ return new Promise((res)=>{ const img = new Image(); img.onload = ()=>res(true); img.onerror = ()=>res(false); img.src = src; }); }
-
-async function setBackgroundIndex(idx){
-  // fade out
-  bgLayer.style.opacity = 0;
-  // after fade out, swap background (wait half fade)
-  await new Promise(r=>setTimeout(r, 450));
-  bgLayer.style.backgroundImage = `url("${BG_IMAGES[idx]}")`;
-  // preload next in background (non-blocking)
-  const next = (idx+1) % BG_IMAGES.length;
-  setTimeout(()=>preloadImage(BG_IMAGES[next]), 100);
-  // fade in
-  bgLayer.style.opacity = 1;
-}
-
-function cycleBackgrounds(){
-  bgIndex = (bgIndex + 1) % BG_IMAGES.length;
-  setBackgroundIndex(bgIndex);
-}
-
-/* initial background setup but don't preload all at once */
-bgLayer.style.backgroundImage = `url("${BG_IMAGES[0]}")`;
-bgLayer.style.opacity = 1;
-showRandomHomeQuote();
-/* start cycling after small delay so page becomes interactive fast */
-setTimeout(()=>{ cycleBackgrounds(); window._bgTimer = setInterval(cycleBackgrounds, 8000); }, 600);
-
-/* ---------- Sobriety (preserve key sobrietyStart) ---------- */
-let sobrietyStart = Storage.get("sobrietyStart", null);
-function updateSobrietyDisplay(){
-  const el = document.getElementById("sobrietyDays"); const startEl = document.getElementById("sobrietyStartDisplay");
-  if(!sobrietyStart){ el.textContent = "Days sober: 0"; startEl.textContent = "not set"; return; }
-  const days = Math.floor((Date.now() - new Date(sobrietyStart)) / (1000*60*60*24));
-  el.textContent = `Days sober: ${days}`; startEl.textContent = new Date(sobrietyStart).toLocaleDateString();
-}
-function setSobrietyStartPrompt(){
-  const d = prompt("Enter sobriety start date (YYYY-MM-DD) or leave blank for today"); if(d===null) return;
-  sobrietyStart = d.trim() ? new Date(d.trim()).toISOString() : new Date().toISOString();
-  Storage.set("sobrietyStart", sobrietyStart); updateSobrietyDisplay();
-}
-function markSoberToday(){
-  if(!sobrietyStart){ sobrietyStart = new Date().toISOString(); Storage.set("sobrietyStart", sobrietyStart); }
-  let log = Storage.get("sobrietyLog", []); const today = new Date().toLocaleDateString();
-  if(!log.includes(today)){ log.push(today); Storage.set("sobrietyLog", log); }
-  updateSobrietyDisplay();
-}
-function resetSobriety(){ if(confirm("Reset sobriety start date to today?")){ sobrietyStart = new Date().toISOString(); Storage.set("sobrietyStart", sobrietyStart); updateSobrietyDisplay(); } }
-updateSobrietyDisplay();
-
-/* ---------- Sleep tracker ---------- */
-let sleepData = Storage.get("sleepData", []);
-function renderSleep(){
-  const ul=document.getElementById("sleepList"); if(!ul) return; ul.innerHTML="";
-  sleepData.slice().reverse().forEach(e=>{ const li=document.createElement("li"); li.textContent=`${e.date}: ${e.hours} hrs`; ul.appendChild(li); });
-}
-function logSleep(){
-  const date = document.getElementById("sleepDate").value || new Date().toLocaleDateString();
-  const hours = parseFloat(document.getElementById("sleepHours").value);
-  if(isNaN(hours)){ alert("Enter valid hours"); return; }
-  sleepData.push({date,hours}); Storage.set("sleepData", sleepData); renderSleep(); document.getElementById("sleepHours").value = "";
-}
-function clearSleepData(){ if(confirm("Clear all sleep history?")){ sleepData=[]; Storage.set("sleepData", sleepData); renderSleep(); } }
-renderSleep();
-
-/* ---------- Workout tracker + lazy chart ---------- */
-let workoutData = Storage.get("workoutData", []);
-const workoutListEl = document.getElementById("workoutList");
-let workoutChart = null;
-let chartLoaded = false;
-
-function renderWorkouts(){
-  if(!workoutListEl) return;
-  workoutListEl.innerHTML = "";
-  workoutData.slice().reverse().forEach(w=>{ const li=document.createElement("li"); li.textContent=`${w.date}: ${w.minutes} min — ${w.type||"exercise"}`; workoutListEl.appendChild(li); });
-  // draw if chart already loaded
-  if(chartLoaded) drawWorkoutChart();
-}
-function logWorkout(){
-  const date = document.getElementById("workoutDate").value || new Date().toLocaleDateString();
-  const minutes = parseInt(document.getElementById("workoutMinutes").value);
-  const type = document.getElementById("workoutType").value || "";
-  if(isNaN(minutes)){ alert("Enter minutes"); return; }
-  workoutData.push({date,minutes,type}); Storage.set("workoutData", workoutData); renderWorkouts();
-  document.getElementById("workoutMinutes").value=""; document.getElementById("workoutType").value="";
-}
-function clearWorkoutData(){ if(confirm("Clear workout history?")){ workoutData=[]; Storage.set("workoutData", workoutData); renderWorkouts(); } }
-
-/* lazy-load Chart.js and render only when chartWrap visible */
-function ensureChartLibAndRender(){
-  if(chartLoaded) return;
-  chartLoaded = true;
-  // create script to load Chart.js CDN
-  const s = document.createElement('script');
-  s.src = "https://cdn.jsdelivr.net/npm/chart.js";
-  s.onload = ()=>{ drawWorkoutChart(); };
-  document.head.appendChild(s);
-}
-function drawWorkoutChart(){
-  const ctx = document.getElementById("workoutChart").getContext("2d");
-  const labels = workoutData.map((w,i)=>`#${i+1}`);
-  const data = workoutData.map(w=>w.minutes);
-  if(workoutChart) workoutChart.destroy();
-  workoutChart = new Chart(ctx, {
-    type:'line',
-    data:{ labels, datasets:[{ label:'Minutes', data, borderColor:'#6fbfbb', backgroundColor:'rgba(111,191,187,0.18)', fill:true }]},
-    options:{ responsive:true, maintainAspectRatio:false, animation:{duration:300} }
-  });
-}
-
-/* Observe chart area to lazy-initialize */
-const chartWrap = document.getElementById('chartWrap');
-if(chartWrap){
-  const chartObserver = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){ ensureChartLibAndRender(); chartObserver.disconnect(); }
-    });
-  }, {threshold:0.25});
-  chartObserver.observe(chartWrap);
-}
-renderWorkouts();
-
-/* ---------- Mood helper ---------- */
-const MOOD_QUOTES = {
-  stressed: ["Try 4 deep breaths. \"You are doing the best you can.\"","Take a short break — you've earned it."],
-  sad: ["It's okay to feel sad. \"Allow yourself small comforts today.\"","This will pass."],
-  anxious: ["Grounding: name 5 things you can see.","Breathe slowly for 1 minute."],
-  angry: ["Take space and breathe. \"Anger is valid — act gently.\"","Count to 10 and try a walk."],
-  calm: ["Keep noticing the calmness — you're doing well."],
-  happy: ["Share your joy with someone today!","Savor this moment."]
-};
-let moodHistory = Storage.get("moodHistory", []);
-function getMoodSuggestion(){
-  const mood = document.getElementById("moodSelect").value; const el = document.getElementById("moodSuggestion");
-  if(!mood){ el.textContent="Choose a mood to get a suggestion."; return; }
-  const choices = MOOD_QUOTES[mood] || ["Take a few breaths."];
-  el.textContent = choices[Math.floor(Math.random()*choices.length)];
-}
-function saveMoodEntry(){
-  const mood = document.getElementById("moodSelect").value; if(!mood){ alert("Select a mood first."); return; }
-  const note = document.getElementById("moodSuggestion").textContent || "";
-  moodHistory.push({date:new Date().toLocaleDateString(), mood, note}); Storage.set("moodHistory", moodHistory); renderMoodHistory();
-}
-function renderMoodHistory(){ const ul = document.getElementById("moodHistory"); ul.innerHTML=""; moodHistory.slice().reverse().forEach(m=>{ const li=document.createElement("li"); li.textContent=`${m.date}: ${m.mood} — ${m.note}`; ul.appendChild(li); }); }
-renderMoodHistory();
-
-/* ---------- Full interactive calendar ---------- */
-let calDate = new Date();
-let calendarNotes = Storage.get("calendarNotes", {});
-function startCalendar(){ renderCalendar(); }
-function renderCalendar(){
-  const grid = document.getElementById("calendar"); if(!grid) return; grid.innerHTML="";
-  const year = calDate.getFullYear(), month = calDate.getMonth();
-  const first = new Date(year, month, 1), last = new Date(year, month+1, 0);
-  document.getElementById("calendarMonthYear").textContent = first.toLocaleString('default',{month:'long', year:'numeric'});
-  const weekDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  weekDays.forEach(d=>{ const h=document.createElement('div'); h.className='day-cell'; h.style.fontWeight='700'; h.style.opacity='0.9'; h.textContent=d; grid.appendChild(h); });
-  const startDay = first.getDay();
-  for(let i=0;i<startDay;i++){ const c=document.createElement('div'); c.className='day-cell'; grid.appendChild(c); }
-  for(let d=1; d<=last.getDate(); d++){
-    const dateKey = new Date(year,month,d).toISOString().slice(0,10);
-    const cell = document.createElement('div'); cell.className='day-cell'; cell.dataset.date=dateKey;
-    cell.innerHTML = `<div class="day-num">${d}</div>`;
-    if(calendarNotes[dateKey]){ const tag = document.createElement('div'); tag.className='note-indicator'; tag.textContent='note'; cell.appendChild(tag); }
-    cell.addEventListener('click',()=>openDayEditor(dateKey)); grid.appendChild(cell);
-  }
-}
-function prevMonth(){ calDate.setMonth(calDate.getMonth()-1); renderCalendar(); }
-function nextMonth(){ calDate.setMonth(calDate.getMonth()+1); renderCalendar(); }
-function gotoToday(){ calDate = new Date(); renderCalendar(); }
-function openDayEditor(dateKey){
-  document.getElementById('dayEditor').classList.remove('hidden'); document.getElementById('dayEditorTitle').textContent = `Notes for ${dateKey}`;
-  document.getElementById('dayNote').value = calendarNotes[dateKey] || ''; document.getElementById('dayEditor').dataset.date = dateKey; renderDayNotesList(dateKey);
-}
-function closeDayEditor(){ document.getElementById('dayEditor').classList.add('hidden'); }
-function saveDayNote(){ const dateKey = document.getElementById('dayEditor').dataset.date; const txt = document.getElementById('dayNote').value.trim(); if(txt){ calendarNotes[dateKey] = txt; } else { delete calendarNotes[dateKey]; } Storage.set("calendarNotes", calendarNotes); renderCalendar(); renderDayNotesList(dateKey); }
-function deleteDayNote(){ const dateKey = document.getElementById('dayEditor').dataset.date; if(confirm("Delete note for " + dateKey + "?")){ delete calendarNotes[dateKey]; Storage.set("calendarNotes", calendarNotes); closeDayEditor(); renderCalendar(); } }
-function renderDayNotesList(dateKey){ const wrap = document.getElementById('dayNotesList'); wrap.innerHTML=''; if(calendarNotes[dateKey]){ const p=document.createElement('p'); p.textContent = calendarNotes[dateKey]; wrap.appendChild(p); } else { wrap.textContent='No notes for this day yet.'; } }
-
-/* ---------- Small helpers & init ---------- */
-function scrollToSection(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth'}); }
-showRandomHomeQuote();
-startCalendar();
-renderSleep();
-renderWorkouts();
-updateSobrietyDisplay();
-renderMoodHistory();
-
-/* Improve perceived performance: defer heavy setup until idle */
-if('requestIdleCallback' in window){
-  requestIdleCallback(()=>{ /* pre-warm next bg */ preloadImage(BG_IMAGES[1]||BG_IMAGES[0]); }, {timeout:2000});
-} else {
-  setTimeout(()=>preloadImage(BG_IMAGES[1]|
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+      </html>
