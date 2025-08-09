@@ -1,30 +1,79 @@
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Add your existing image filenames here
-    const images = [
-        "forest-1.jpg",
-        "forest-2.jpg",
-        "forest-3.jpg",
-        "dim-forest-1.jpg",
-        "dim-forest-2.jpg",
-        // New ones we just added:
-        "travel-1.jpg",
-        "rain-1.jpg",
-        "cloud.jpg"
-    ];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Wellness Space</h1>
+        <p>Here you can track your sobriety, sleep, fitness, and get uplifting quotes for any mood.</p>
 
-    const body = document.body;
+        <!-- Mood selector -->
+        <section id="mood-section">
+            <label for="mood">How are you feeling today?</label>
+            <select id="mood">
+                <option value="">Select a mood</option>
+                <option value="happy">Happy</option>
+                <option value="sad">Sad</option>
+                <option value="motivated">Motivated</option>
+                <option value="anxious">Anxious</option>
+                <option value="calm">Calm</option>
+            </select>
+            <button id="get-quote">Get Quote</button>
+            <p id="quote-display"></p>
+        </section>
 
-    function changeBackground() {
-        const randomImage = images[Math.floor(Math.random() * images.length)];
-        body.style.backgroundImage = `url('images/${randomImage}')`;
-        body.style.backgroundSize = "cover";
-        body.style.backgroundPosition = "center";
-        body.style.transition = "background-image 1.5s ease-in-out";
-    }
+        <!-- Sobriety Tracker -->
+        <section id="sobriety-section">
+            <h2>Sobriety Tracker</h2>
+            <label for="sobriety-date">Sobriety Start Date:</label>
+            <input type="date" id="sobriety-date">
+            <p id="sobriety-days"></p>
+        </section>
 
-    // Change background every 8 seconds
-    changeBackground();
-    setInterval(changeBackground, 8000);
-});
-            </script>
+        <!-- Sleep Tracker -->
+        <section id="sleep-section">
+            <h2>Sleep Tracker</h2>
+            <label for="sleep-hours">Hours Slept:</label>
+            <input type="number" id="sleep-hours" min="0" max="24">
+            <button id="log-sleep">Log Sleep</button>
+            <ul id="sleep-log"></ul>
+        </section>
+
+        <!-- Fitness Tracker -->
+        <section id="fitness-section">
+            <h2>Fitness Tracker</h2>
+            <label for="fitness-activity">Activity:</label>
+            <input type="text" id="fitness-activity">
+            <label for="fitness-minutes">Minutes:</label>
+            <input type="number" id="fitness-minutes">
+            <button id="log-fitness">Log Activity</button>
+            <ul id="fitness-log"></ul>
+        </section>
+
+        <!-- Calendar -->
+        <section id="calendar-section">
+            <h2>Calendar</h2>
+            <input type="date" id="calendar-date">
+            <input type="text" id="calendar-note" placeholder="Note for the day">
+            <button id="log-calendar">Add to Calendar</button>
+            <ul id="calendar-log"></ul>
+        </section>
+
+        <!-- Crisis Helplines -->
+        <section id="helplines">
+            <h2>Mental Health Crisis Helplines</h2>
+            <ul>
+                <li>988 Suicide & Crisis Lifeline (US) - Call or Text 988</li>
+                <li>Samaritans (UK) - Call 116 123</li>
+                <li>Lifeline (Australia) - Call 13 11 14</li>
+            </ul>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+    </html>
