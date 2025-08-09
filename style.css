@@ -1,28 +1,33 @@
-/* Background styling */
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
+    font-family: Arial, sans-serif;
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
-    transition: background-image 1.5s ease-in-out;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-repeat: no-repeat;
+    transition: background-image 0.5s ease-in-out;
 }
 
-/* Optional: dark overlay to improve text readability */
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.2); /* adjustable overlay darkness */
-    z-index: -1;
+/* Fade-out effect */
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
-/* Text styling so it’s readable on all backgrounds */
-h1, h2, h3, p, label, span {
-    color: #ffffff;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5
+header {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    text-align: center;
+    color: white;
+}
+
+.app-icon {
+    width: 50px;
+    height: 50px;
+}
+
+main {
+    padding: 20px;
+    color: white;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+}
