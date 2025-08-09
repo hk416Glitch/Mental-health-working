@@ -1,51 +1,29 @@
-const backgrounds = [
-    "images/bg1.jpg",
-    "images/bg2.jpg",
-    "images/bg3.jpg"
+const backgrounds = ["bg-ocean-1.jpg", "bg-ocean-2.jpg", "bg-snow-2.jpg"];
+const quotes = [
+    "You are stronger than you think.",
+    "This too shall pass.",
+    "Take it one step at a time.",
+    "Breathe in courage, breathe out fear.",
+    "Every day is a second chance.",
+    "You matter more than you know."
 ];
-let bgIndex = 0;
 
+let currentBg = 0;
+const bgElement = document.getElementById("background");
+const quoteElement = document.getElementById("quote");
+
+// Show random quote
+quoteElement.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+
+// Background fade loop
 function changeBackground() {
-    bgIndex = (bgIndex + 1) % backgrounds.length;
-    document.body.style.backgroundImage = `url('${backgrounds[bgIndex]}')`;
-}
-setInterval(changeBackground, 5000);
-
-// Sobriety tracker
-function updateSobriety() {
-    const date = document.getElementById('sobrietyDate').value;
-    if (date) {
-        const days = Math.floor((Date.now() - new Date(date)) / (1000 * 60 * 60 * 24));
-        document.getElementById('sobrietyResult').innerText = `You have been sober for ${days} days.`;
-    }
+    currentBg = (currentBg + 1) % backgrounds.length;
+    bgElement.style.opacity = 0;
+    setTimeout(() => {
+        bgElement.style.backgroundImage = `url(${backgrounds[currentBg]})`;
+        bgElement.style.opacity = 1;
+    }, 2000);
 }
 
-// Sleep tracker
-function updateSleep() {
-    const hours = document.getElementById('sleepHours').value;
-    document.getElementById('sleepResult').innerText = `You slept ${hours} hours last night.`;
-}
-
-// Workout tracker
-let workoutData = [];
-function updateWorkout() {
-    const minutes = parseInt(document.getElementById('workoutMinutes').value);
-    if (!isNaN(minutes)) {
-        workoutData.push(minutes);
-        drawWorkoutChart();
-    }
-}
-
-function drawWorkoutChart() {
-    const ctx = document.getElementById('workoutChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: workoutData.map((_, i) => `Day ${i+1}`),
-            datasets: [{
-                label: 'Workout Minutes',
-                data: workoutData
-            }]
-        }
-    });
-}
+bgElement.style.backgroundImage = `url(${backgrounds[currentBg]})`;
+setInterval(changeBackground, 8000);
