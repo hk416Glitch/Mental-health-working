@@ -8,31 +8,26 @@
     <link rel="manifest" href="manifest.json" />
 </head>
 <body>
-    <div id="app">
+    <div id="background"></div>
+
+    <div class="content">
         <h1>Mental Care App</h1>
-        <p>Your mental health tracking tools in one place.</p>
+        <p id="quote"></p>
 
-        <div class="tracker">
-            <h2>Sobriety Tracker</h2>
-            <input type="date" id="sobrietyDate" />
-            <button onclick="updateSobriety()">Track</button>
-            <p id="sobrietyResult"></p>
+        <div class="menu">
+            <button onclick="alert('Mood Tracker Coming Soon')">Mood Tracker</button>
+            <button onclick="alert('Breathing Exercises Coming Soon')">Breathing</button>
+            <button onclick="alert('Meditation Timer Coming Soon')">Meditation</button>
         </div>
 
-        <div class="tracker">
-            <h2>Sleep Tracker</h2>
-            <input type="number" id="sleepHours" placeholder="Hours slept" />
-            <button onclick="updateSleep()">Track</button>
-            <p id="sleepResult"></p>
-        </div>
-
-        <div class="tracker">
-            <h2>Workout Tracker</h2>
-            <input type="number" id="workoutMinutes" placeholder="Minutes worked out" />
-            <button onclick="updateWorkout()">Track</button>
-            <canvas id="workoutChart"></canvas>
+        <div class="helplines">
+            <h3>Need Help Now?</h3>
+            <p>988 Suicide & Crisis Lifeline (US): Call or Text 988</p>
+            <p>Samaritans (UK & Ireland): Call 116 123</p>
+            <p>Lifeline (Australia): Call 13 11 14</p>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
