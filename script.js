@@ -1,12 +1,51 @@
-function showSection(sectionId) {
-  document.querySelectorAll('main section').forEach(sec => {
-    sec.classList.add('hidden');
-  });
-  document.getElementById(sectionId).classList.remove('hidden');
+const backgrounds = [
+    "images/bg1.jpg",
+    "images/bg2.jpg",
+    "images/bg3.jpg"
+];
+let bgIndex = 0;
+
+function changeBackground() {
+    bgIndex = (bgIndex + 1) % backgrounds.length;
+    document.body.style.backgroundImage = `url('${backgrounds[bgIndex]}')`;
+}
+setInterval(changeBackground, 5000);
+
+// Sobriety tracker
+function updateSobriety() {
+    const date = document.getElementById('sobrietyDate').value;
+    if (date) {
+        const days = Math.floor((Date.now() - new Date(date)) / (1000 * 60 * 60 * 24));
+        document.getElementById('sobrietyResult').innerText = `You have been sober for ${days} days.`;
+    }
 }
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(() => console.log("Service Worker Registered"))
-    .catch(err => console.log("SW registration failed", err));
+// Sleep tracker
+function updateSleep() {
+    const hours = document.getElementById('sleepHours').value;
+    document.getElementById('sleepResult').innerText = `You slept ${hours} hours last night.`;
+}
+
+// Workout tracker
+let workoutData = [];
+function updateWorkout() {
+    const minutes = parseInt(document.getElementById('workoutMinutes').value);
+    if (!isNaN(minutes)) {
+        workoutData.push(minutes);
+        drawWorkoutChart();
+    }
+}
+
+function drawWorkoutChart() {
+    const ctx = document.getElementById('workoutChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: workoutData.map((_, i) => `Day ${i+1}`),
+            datasets: [{
+                label: 'Workout Minutes',
+                data: workoutData
+            }]
+        }
+    });
 }
