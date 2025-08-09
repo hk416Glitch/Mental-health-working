@@ -1,27 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mental Care App</title>
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Preload first background -->
-    <link rel="preload" as="image" href="bg-ocean-1.jpg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mental Care Health</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <img src="icon.png" alt="App Icon" class="app-icon">
-        <h1>Mental Care App</h1>
-    </header>
+  <header>
+    <img src="icon.png" alt="App Icon" class="app-icon" />
+    <h1>Mental Care Health</h1>
+  </header>
 
-    <main>
-        <!-- Your existing content and trackers stay here -->
-        <section id="app-content">
-            <!-- Your sobriety tracker, mood selector, etc. -->
-        </section>
-    </main>
+  <main>
+    <section id="quote-section">
+      <h2>Positive Quote</h2>
+      <p id="quote">Loading...</p>
+    </section>
 
-    <script src="script.js"></script>
+    <section id="trackers">
+      <div class="tracker" id="sobriety-tracker">
+        <h3>Sobriety Tracker</h3>
+        <p id="sobriety-days">0 days</p>
+        <button onclick="resetSobriety()">Reset</button>
+      </div>
+
+      <div class="tracker" id="sleep-tracker">
+        <h3>Sleep Tracker</h3>
+        <input type="time" id="sleep-time" />
+        <input type="time" id="wake-time" />
+        <button onclick="saveSleep()">Save</button>
+      </div>
+
+      <div class="tracker" id="fitness-tracker">
+        <h3>Fitness Tracker</h3>
+        <input type="text" id="workout" placeholder="Workout done..." />
+        <button onclick="saveWorkout()">Save</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
