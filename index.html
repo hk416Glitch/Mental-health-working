@@ -3,31 +3,71 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mental Care App</title>
+  <title>Mental Care App — Optimized</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="style.css" />
-  <!-- Chart.js for workout chart -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="theme-color" content="#4A90E2" />
+  <style>
+  :root{
+    --card-bg: rgba(10,18,24,0.62);
+    --accent: #6fbfbb;
+    --muted: rgba(255,255,255,0.85);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#000;color:#fff}
+  /* Background layer: opacity-only fade (GPU-friendly) */
+  #bg-layer{
+    position:fixed;inset:0;background-size:cover;background-position:center;z-index:-2;
+    transition:opacity 900ms ease-in-out;opacity:1;will-change:opacity,background-image;
+  }
+  /* small overlay to slightly dim images for legibility */
+  #bg-dim{position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.25),rgba(0,0,0,0.35));z-index:-1;pointer-events:none}
+  .header{display:flex;align-items:center;gap:12px;padding:12px;background:linear-gradient(180deg,rgba(0,0,0,0.5),transparent)}
+  .app-icon{width:44px;height:44px;border-radius:8px;object-fit:cover}
+  .container{padding:14px;max-width:980px;margin:0 auto}
+  .card{background:var(--card-bg);padding:14px;border-radius:12px;margin:12px 0;box-shadow:0 8px 24px rgba(0,0,0,0.6)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  button{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+  button:hover{background:rgba(255,255,255,0.12)}
+  input,select,textarea{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:#fff}
+  .quote{font-style:italic;font-size:1.05rem;margin:14px auto;color:var(--muted)}
+  .muted{color:rgba(255,255,255,0.78);font-size:0.92rem}
+  .list{list-style:none;padding-left:0;margin:0}
+  .list li{padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.04)}
+  .hidden{display:none}
+  .small{max-width:720px;margin:12px auto}
+  .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+  .day-cell{min-height:66px;background:rgba(255,255,255,0.03);border-radius:8px;padding:6px;cursor:pointer;position:relative}
+  .day-num{position:absolute;top:6px;right:8px;font-size:0.85rem;opacity:0.8}
+  .note-indicator{position:absolute;left:6px;bottom:6px;background:var(--accent);color:#042;padding:2px 6px;border-radius:6px;font-size:0.75rem}
+  .helpline{text-align:center;background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4))}
+  .footer{padding:12px;text-align:center;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.6));font-size:0.85rem}
+  /* Chart container smaller & responsive to reduce CPU */
+  .chart-wrap{width:100%;max-width:420px;height:220px;margin:8px auto}
+  @media (max-width:600px){
+    .chart-wrap{max-width:320px;height:180px}
+    .calendar-grid{grid-template-columns:repeat(7,calc(100%/7))}
+    .day-cell{min-height:56px}
+  }
+  </style>
 </head>
 <body>
-  <div id="bg-layer"></div>
+  <div id="bg-layer" aria-hidden="true"></div>
+  <div id="bg-dim" aria-hidden="true"></div>
 
   <header class="header">
-    <img src="icon.png" alt="app icon" class="app-icon">
+    <img src="icon.png" alt="icon" class="app-icon">
     <h1>Mental Care App</h1>
   </header>
 
   <main class="container">
-
-    <!-- EXISTING HOME (keeps original quote rotation) -->
-    <section id="home" class="card">
+    <!-- Home -->
+    <section class="card" id="homeCard">
       <h2>Welcome</h2>
       <p id="homeQuote" class="quote">Loading encouragement…</p>
     </section>
 
-    <!-- TRACKERS NAV (keeps compact so page scrolls) -->
+    <!-- Quick nav -->
     <section class="card">
-      <h2>Quick Tools</h2>
       <div class="row">
         <button onclick="scrollToSection('sobrietySection')">Sobriety</button>
         <button onclick="scrollToSection('sleepSection')">Sleep</button>
@@ -37,19 +77,19 @@
       </div>
     </section>
 
-    <!-- SOBRIETY TRACKER -->
+    <!-- Sobriety -->
     <section id="sobrietySection" class="card">
       <h2>Sobriety Tracker</h2>
       <p id="sobrietyDays">Days sober: —</p>
       <div class="row">
         <button onclick="markSoberToday()">Mark sober today</button>
-        <button onclick="setSobrietyStartPrompt()">Set start date</button>
+        <button onclick="setSobrietyStartPrompt()">Set start</button>
         <button onclick="resetSobriety()">Reset</button>
       </div>
       <p class="muted">Start date: <span id="sobrietyStartDisplay">not set</span></p>
     </section>
 
-    <!-- SLEEP TRACKER -->
+    <!-- Sleep -->
     <section id="sleepSection" class="card">
       <h2>Sleep Tracker</h2>
       <div class="row">
@@ -62,27 +102,31 @@
       <ul id="sleepList" class="list"></ul>
     </section>
 
-    <!-- WORKOUT TRACKER -->
+    <!-- Workout -->
     <section id="workoutSection" class="card">
       <h2>Workout Tracker</h2>
       <div class="row">
         <input id="workoutDate" type="date" />
         <input id="workoutMinutes" type="number" min="0" placeholder="minutes"/>
-        <input id="workoutType" placeholder="type (e.g. run, yoga)"/>
+        <input id="workoutType" placeholder="type (run, yoga)"/>
         <button onclick="logWorkout()">Log Workout</button>
         <button onclick="clearWorkoutData()">Clear Workouts</button>
       </div>
-      <h3>Chart</h3>
-      <canvas id="workoutChart" height="180"></canvas>
+
+      <h3>Chart (lazy)</h3>
+      <div class="chart-wrap" id="chartWrap">
+        <canvas id="workoutChart" width="400" height="220"></canvas>
+      </div>
+
       <h3>Recent</h3>
       <ul id="workoutList" class="list"></ul>
     </section>
 
-    <!-- MOOD + MOOD-BASED QUOTES (separate from home quote) -->
+    <!-- Mood -->
     <section id="moodSection" class="card">
       <h2>Mood Helper</h2>
       <select id="moodSelect">
-        <option value="">Select your mood</option>
+        <option value="">Select mood</option>
         <option value="stressed">Stressed</option>
         <option value="sad">Sad</option>
         <option value="anxious">Anxious</option>
@@ -99,12 +143,12 @@
       <ul id="moodHistory" class="list"></ul>
     </section>
 
-    <!-- FULL INTERACTIVE CALENDAR -->
+    <!-- Calendar -->
     <section id="calendarSection" class="card">
       <h2>Calendar</h2>
       <div class="calendar-controls row">
         <button onclick="prevMonth()">◀</button>
-        <div id="calendarMonthYear"></div>
+        <div id="calendarMonthYear" style="flex:1;text-align:center"></div>
         <button onclick="nextMonth()">▶</button>
         <button onclick="gotoToday()">Today</button>
       </div>
@@ -122,7 +166,6 @@
       </div>
     </section>
 
-    <!-- HELPLINES (fixed-ish) -->
     <section class="card helpline">
       <h3>Need Help Now?</h3>
       <p><strong>US/Canada:</strong> 988 — Call or Text</p>
@@ -137,6 +180,226 @@
     <small>All data stored locally on your device. This app is not a replacement for professional help.</small>
   </footer>
 
-  <script src="script.js"></script>
-</body>
-        </html>
+  <script>
+/* ----------------------------
+   Optimized app script (single file)
+   - lazy loads heavy resources
+   - preserves localStorage keys from earlier versions
+   ----------------------------*/
+
+/* ---------- Utilities & storage ---------- */
+const Storage = {
+  get(k, fallback){ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; },
+  set(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+};
+
+/* ---------- Background & Home Quote (optimized lazy preload) ---------- */
+const BG_IMAGES = ["bg-ocean-1.jpg","bg-ocean-2.jpg","bg-snow-2.jpg"];
+let bgIndex = 0;
+const bgLayer = document.getElementById('bg-layer');
+const HOME_QUOTES = [
+  "You are stronger than you think.",
+  "This too shall pass.",
+  "Take it one step at a time.",
+  "Breathe in courage, breathe out fear.",
+  "Every day is a second chance.",
+  "You matter more than you know."
+];
+function showRandomHomeQuote(){
+  const el = document.getElementById('homeQuote'); if(!el) return;
+  el.textContent = HOME_QUOTES[Math.floor(Math.random()*HOME_QUOTES.length)];
+}
+
+/* Preload next image just-in-time to reduce memory & bandwidth */
+function preloadImage(src){ return new Promise((res)=>{ const img = new Image(); img.onload = ()=>res(true); img.onerror = ()=>res(false); img.src = src; }); }
+
+async function setBackgroundIndex(idx){
+  // fade out
+  bgLayer.style.opacity = 0;
+  // after fade out, swap background (wait half fade)
+  await new Promise(r=>setTimeout(r, 450));
+  bgLayer.style.backgroundImage = `url("${BG_IMAGES[idx]}")`;
+  // preload next in background (non-blocking)
+  const next = (idx+1) % BG_IMAGES.length;
+  setTimeout(()=>preloadImage(BG_IMAGES[next]), 100);
+  // fade in
+  bgLayer.style.opacity = 1;
+}
+
+function cycleBackgrounds(){
+  bgIndex = (bgIndex + 1) % BG_IMAGES.length;
+  setBackgroundIndex(bgIndex);
+}
+
+/* initial background setup but don't preload all at once */
+bgLayer.style.backgroundImage = `url("${BG_IMAGES[0]}")`;
+bgLayer.style.opacity = 1;
+showRandomHomeQuote();
+/* start cycling after small delay so page becomes interactive fast */
+setTimeout(()=>{ cycleBackgrounds(); window._bgTimer = setInterval(cycleBackgrounds, 8000); }, 600);
+
+/* ---------- Sobriety (preserve key sobrietyStart) ---------- */
+let sobrietyStart = Storage.get("sobrietyStart", null);
+function updateSobrietyDisplay(){
+  const el = document.getElementById("sobrietyDays"); const startEl = document.getElementById("sobrietyStartDisplay");
+  if(!sobrietyStart){ el.textContent = "Days sober: 0"; startEl.textContent = "not set"; return; }
+  const days = Math.floor((Date.now() - new Date(sobrietyStart)) / (1000*60*60*24));
+  el.textContent = `Days sober: ${days}`; startEl.textContent = new Date(sobrietyStart).toLocaleDateString();
+}
+function setSobrietyStartPrompt(){
+  const d = prompt("Enter sobriety start date (YYYY-MM-DD) or leave blank for today"); if(d===null) return;
+  sobrietyStart = d.trim() ? new Date(d.trim()).toISOString() : new Date().toISOString();
+  Storage.set("sobrietyStart", sobrietyStart); updateSobrietyDisplay();
+}
+function markSoberToday(){
+  if(!sobrietyStart){ sobrietyStart = new Date().toISOString(); Storage.set("sobrietyStart", sobrietyStart); }
+  let log = Storage.get("sobrietyLog", []); const today = new Date().toLocaleDateString();
+  if(!log.includes(today)){ log.push(today); Storage.set("sobrietyLog", log); }
+  updateSobrietyDisplay();
+}
+function resetSobriety(){ if(confirm("Reset sobriety start date to today?")){ sobrietyStart = new Date().toISOString(); Storage.set("sobrietyStart", sobrietyStart); updateSobrietyDisplay(); } }
+updateSobrietyDisplay();
+
+/* ---------- Sleep tracker ---------- */
+let sleepData = Storage.get("sleepData", []);
+function renderSleep(){
+  const ul=document.getElementById("sleepList"); if(!ul) return; ul.innerHTML="";
+  sleepData.slice().reverse().forEach(e=>{ const li=document.createElement("li"); li.textContent=`${e.date}: ${e.hours} hrs`; ul.appendChild(li); });
+}
+function logSleep(){
+  const date = document.getElementById("sleepDate").value || new Date().toLocaleDateString();
+  const hours = parseFloat(document.getElementById("sleepHours").value);
+  if(isNaN(hours)){ alert("Enter valid hours"); return; }
+  sleepData.push({date,hours}); Storage.set("sleepData", sleepData); renderSleep(); document.getElementById("sleepHours").value = "";
+}
+function clearSleepData(){ if(confirm("Clear all sleep history?")){ sleepData=[]; Storage.set("sleepData", sleepData); renderSleep(); } }
+renderSleep();
+
+/* ---------- Workout tracker + lazy chart ---------- */
+let workoutData = Storage.get("workoutData", []);
+const workoutListEl = document.getElementById("workoutList");
+let workoutChart = null;
+let chartLoaded = false;
+
+function renderWorkouts(){
+  if(!workoutListEl) return;
+  workoutListEl.innerHTML = "";
+  workoutData.slice().reverse().forEach(w=>{ const li=document.createElement("li"); li.textContent=`${w.date}: ${w.minutes} min — ${w.type||"exercise"}`; workoutListEl.appendChild(li); });
+  // draw if chart already loaded
+  if(chartLoaded) drawWorkoutChart();
+}
+function logWorkout(){
+  const date = document.getElementById("workoutDate").value || new Date().toLocaleDateString();
+  const minutes = parseInt(document.getElementById("workoutMinutes").value);
+  const type = document.getElementById("workoutType").value || "";
+  if(isNaN(minutes)){ alert("Enter minutes"); return; }
+  workoutData.push({date,minutes,type}); Storage.set("workoutData", workoutData); renderWorkouts();
+  document.getElementById("workoutMinutes").value=""; document.getElementById("workoutType").value="";
+}
+function clearWorkoutData(){ if(confirm("Clear workout history?")){ workoutData=[]; Storage.set("workoutData", workoutData); renderWorkouts(); } }
+
+/* lazy-load Chart.js and render only when chartWrap visible */
+function ensureChartLibAndRender(){
+  if(chartLoaded) return;
+  chartLoaded = true;
+  // create script to load Chart.js CDN
+  const s = document.createElement('script');
+  s.src = "https://cdn.jsdelivr.net/npm/chart.js";
+  s.onload = ()=>{ drawWorkoutChart(); };
+  document.head.appendChild(s);
+}
+function drawWorkoutChart(){
+  const ctx = document.getElementById("workoutChart").getContext("2d");
+  const labels = workoutData.map((w,i)=>`#${i+1}`);
+  const data = workoutData.map(w=>w.minutes);
+  if(workoutChart) workoutChart.destroy();
+  workoutChart = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets:[{ label:'Minutes', data, borderColor:'#6fbfbb', backgroundColor:'rgba(111,191,187,0.18)', fill:true }]},
+    options:{ responsive:true, maintainAspectRatio:false, animation:{duration:300} }
+  });
+}
+
+/* Observe chart area to lazy-initialize */
+const chartWrap = document.getElementById('chartWrap');
+if(chartWrap){
+  const chartObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ ensureChartLibAndRender(); chartObserver.disconnect(); }
+    });
+  }, {threshold:0.25});
+  chartObserver.observe(chartWrap);
+}
+renderWorkouts();
+
+/* ---------- Mood helper ---------- */
+const MOOD_QUOTES = {
+  stressed: ["Try 4 deep breaths. \"You are doing the best you can.\"","Take a short break — you've earned it."],
+  sad: ["It's okay to feel sad. \"Allow yourself small comforts today.\"","This will pass."],
+  anxious: ["Grounding: name 5 things you can see.","Breathe slowly for 1 minute."],
+  angry: ["Take space and breathe. \"Anger is valid — act gently.\"","Count to 10 and try a walk."],
+  calm: ["Keep noticing the calmness — you're doing well."],
+  happy: ["Share your joy with someone today!","Savor this moment."]
+};
+let moodHistory = Storage.get("moodHistory", []);
+function getMoodSuggestion(){
+  const mood = document.getElementById("moodSelect").value; const el = document.getElementById("moodSuggestion");
+  if(!mood){ el.textContent="Choose a mood to get a suggestion."; return; }
+  const choices = MOOD_QUOTES[mood] || ["Take a few breaths."];
+  el.textContent = choices[Math.floor(Math.random()*choices.length)];
+}
+function saveMoodEntry(){
+  const mood = document.getElementById("moodSelect").value; if(!mood){ alert("Select a mood first."); return; }
+  const note = document.getElementById("moodSuggestion").textContent || "";
+  moodHistory.push({date:new Date().toLocaleDateString(), mood, note}); Storage.set("moodHistory", moodHistory); renderMoodHistory();
+}
+function renderMoodHistory(){ const ul = document.getElementById("moodHistory"); ul.innerHTML=""; moodHistory.slice().reverse().forEach(m=>{ const li=document.createElement("li"); li.textContent=`${m.date}: ${m.mood} — ${m.note}`; ul.appendChild(li); }); }
+renderMoodHistory();
+
+/* ---------- Full interactive calendar ---------- */
+let calDate = new Date();
+let calendarNotes = Storage.get("calendarNotes", {});
+function startCalendar(){ renderCalendar(); }
+function renderCalendar(){
+  const grid = document.getElementById("calendar"); if(!grid) return; grid.innerHTML="";
+  const year = calDate.getFullYear(), month = calDate.getMonth();
+  const first = new Date(year, month, 1), last = new Date(year, month+1, 0);
+  document.getElementById("calendarMonthYear").textContent = first.toLocaleString('default',{month:'long', year:'numeric'});
+  const weekDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  weekDays.forEach(d=>{ const h=document.createElement('div'); h.className='day-cell'; h.style.fontWeight='700'; h.style.opacity='0.9'; h.textContent=d; grid.appendChild(h); });
+  const startDay = first.getDay();
+  for(let i=0;i<startDay;i++){ const c=document.createElement('div'); c.className='day-cell'; grid.appendChild(c); }
+  for(let d=1; d<=last.getDate(); d++){
+    const dateKey = new Date(year,month,d).toISOString().slice(0,10);
+    const cell = document.createElement('div'); cell.className='day-cell'; cell.dataset.date=dateKey;
+    cell.innerHTML = `<div class="day-num">${d}</div>`;
+    if(calendarNotes[dateKey]){ const tag = document.createElement('div'); tag.className='note-indicator'; tag.textContent='note'; cell.appendChild(tag); }
+    cell.addEventListener('click',()=>openDayEditor(dateKey)); grid.appendChild(cell);
+  }
+}
+function prevMonth(){ calDate.setMonth(calDate.getMonth()-1); renderCalendar(); }
+function nextMonth(){ calDate.setMonth(calDate.getMonth()+1); renderCalendar(); }
+function gotoToday(){ calDate = new Date(); renderCalendar(); }
+function openDayEditor(dateKey){
+  document.getElementById('dayEditor').classList.remove('hidden'); document.getElementById('dayEditorTitle').textContent = `Notes for ${dateKey}`;
+  document.getElementById('dayNote').value = calendarNotes[dateKey] || ''; document.getElementById('dayEditor').dataset.date = dateKey; renderDayNotesList(dateKey);
+}
+function closeDayEditor(){ document.getElementById('dayEditor').classList.add('hidden'); }
+function saveDayNote(){ const dateKey = document.getElementById('dayEditor').dataset.date; const txt = document.getElementById('dayNote').value.trim(); if(txt){ calendarNotes[dateKey] = txt; } else { delete calendarNotes[dateKey]; } Storage.set("calendarNotes", calendarNotes); renderCalendar(); renderDayNotesList(dateKey); }
+function deleteDayNote(){ const dateKey = document.getElementById('dayEditor').dataset.date; if(confirm("Delete note for " + dateKey + "?")){ delete calendarNotes[dateKey]; Storage.set("calendarNotes", calendarNotes); closeDayEditor(); renderCalendar(); } }
+function renderDayNotesList(dateKey){ const wrap = document.getElementById('dayNotesList'); wrap.innerHTML=''; if(calendarNotes[dateKey]){ const p=document.createElement('p'); p.textContent = calendarNotes[dateKey]; wrap.appendChild(p); } else { wrap.textContent='No notes for this day yet.'; } }
+
+/* ---------- Small helpers & init ---------- */
+function scrollToSection(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth'}); }
+showRandomHomeQuote();
+startCalendar();
+renderSleep();
+renderWorkouts();
+updateSobrietyDisplay();
+renderMoodHistory();
+
+/* Improve perceived performance: defer heavy setup until idle */
+if('requestIdleCallback' in window){
+  requestIdleCallback(()=>{ /* pre-warm next bg */ preloadImage(BG_IMAGES[1]||BG_IMAGES[0]); }, {timeout:2000});
+} else {
+  setTimeout(()=>preloadImage(BG_IMAGES[1]|
