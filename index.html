@@ -1,69 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mental Care App</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#4a90e2" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mental Care App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
 </head>
 <body>
-  <header>
-    <h1>Mental Care App</h1>
-    <nav>
-      <button onclick="showSection('sobriety')">Sobriety Tracker</button>
-      <button onclick="showSection('sleep')">Sleep Tracker</button>
-      <button onclick="showSection('workout')">Workout Chart</button>
-    </nav>
-  </header>
+    <div id="app">
+        <h1>Mental Care App</h1>
+        <p>Your mental health tracking tools in one place.</p>
 
-  <main>
-    <section id="sobriety" class="hidden">
-      <h2>Sobriety Tracker</h2>
-      <p>Track your sober days here.</p>
-    </section>
+        <div class="tracker">
+            <h2>Sobriety Tracker</h2>
+            <input type="date" id="sobrietyDate" />
+            <button onclick="updateSobriety()">Track</button>
+            <p id="sobrietyResult"></p>
+        </div>
 
-    <section id="sleep" class="hidden">
-      <h2>Sleep Tracker</h2>
-      <p>Log your sleep hours and patterns.</p>
-    </section>
+        <div class="tracker">
+            <h2>Sleep Tracker</h2>
+            <input type="number" id="sleepHours" placeholder="Hours slept" />
+            <button onclick="updateSleep()">Track</button>
+            <p id="sleepResult"></p>
+        </div>
 
-    <section id="workout" class="hidden">
-      <h2>Workout Chart</h2>
-      <p>Track how much you work out each week.</p>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2025 Mental Care App</p>
-  </footer>
-
-  <script>
-    function showSection(sectionId) {
-      document.querySelectorAll('main section').forEach(sec => {
-        sec.classList.add('hidden');
-      });
-      document.getElementById(sectionId).classList.remove('hidden');
-    }
-  </script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: url('bg-ocean1.jpg') no-repeat center center/cover;
-      margin: 0;
-      padding: 0;
-    }
-    nav button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
+        <div class="tracker">
+            <h2>Workout Tracker</h2>
+            <input type="number" id="workoutMinutes" placeholder="Minutes worked out" />
+            <button onclick="updateWorkout()">Track</button>
+            <canvas id="workoutChart"></canvas>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
