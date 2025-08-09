@@ -1,33 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mental Care App</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="manifest" href="manifest.json" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mental Care App</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Chart.js for workout chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div id="background"></div>
+  <div id="bg-layer"></div>
 
-    <div class="content">
-        <h1>Mental Care App</h1>
-        <p id="quote"></p>
+  <header class="header">
+    <img src="icon.png" alt="app icon" class="app-icon">
+    <h1>Mental Care App</h1>
+  </header>
 
-        <div class="menu">
-            <button onclick="alert('Mood Tracker Coming Soon')">Mood Tracker</button>
-            <button onclick="alert('Breathing Exercises Coming Soon')">Breathing</button>
-            <button onclick="alert('Meditation Timer Coming Soon')">Meditation</button>
+  <main class="container">
+
+    <!-- EXISTING HOME (keeps original quote rotation) -->
+    <section id="home" class="card">
+      <h2>Welcome</h2>
+      <p id="homeQuote" class="quote">Loading encouragement…</p>
+    </section>
+
+    <!-- TRACKERS NAV (keeps compact so page scrolls) -->
+    <section class="card">
+      <h2>Quick Tools</h2>
+      <div class="row">
+        <button onclick="scrollToSection('sobrietySection')">Sobriety</button>
+        <button onclick="scrollToSection('sleepSection')">Sleep</button>
+        <button onclick="scrollToSection('workoutSection')">Workout</button>
+        <button onclick="scrollToSection('moodSection')">Mood</button>
+        <button onclick="scrollToSection('calendarSection')">Calendar</button>
+      </div>
+    </section>
+
+    <!-- SOBRIETY TRACKER -->
+    <section id="sobrietySection" class="card">
+      <h2>Sobriety Tracker</h2>
+      <p id="sobrietyDays">Days sober: —</p>
+      <div class="row">
+        <button onclick="markSoberToday()">Mark sober today</button>
+        <button onclick="setSobrietyStartPrompt()">Set start date</button>
+        <button onclick="resetSobriety()">Reset</button>
+      </div>
+      <p class="muted">Start date: <span id="sobrietyStartDisplay">not set</span></p>
+    </section>
+
+    <!-- SLEEP TRACKER -->
+    <section id="sleepSection" class="card">
+      <h2>Sleep Tracker</h2>
+      <div class="row">
+        <input id="sleepDate" type="date" />
+        <input id="sleepHours" type="number" min="0" step="0.1" placeholder="hours"/>
+        <button onclick="logSleep()">Log Sleep</button>
+        <button onclick="clearSleepData()">Clear Sleep</button>
+      </div>
+      <h3>History</h3>
+      <ul id="sleepList" class="list"></ul>
+    </section>
+
+    <!-- WORKOUT TRACKER -->
+    <section id="workoutSection" class="card">
+      <h2>Workout Tracker</h2>
+      <div class="row">
+        <input id="workoutDate" type="date" />
+        <input id="workoutMinutes" type="number" min="0" placeholder="minutes"/>
+        <input id="workoutType" placeholder="type (e.g. run, yoga)"/>
+        <button onclick="logWorkout()">Log Workout</button>
+        <button onclick="clearWorkoutData()">Clear Workouts</button>
+      </div>
+      <h3>Chart</h3>
+      <canvas id="workoutChart" height="180"></canvas>
+      <h3>Recent</h3>
+      <ul id="workoutList" class="list"></ul>
+    </section>
+
+    <!-- MOOD + MOOD-BASED QUOTES (separate from home quote) -->
+    <section id="moodSection" class="card">
+      <h2>Mood Helper</h2>
+      <select id="moodSelect">
+        <option value="">Select your mood</option>
+        <option value="stressed">Stressed</option>
+        <option value="sad">Sad</option>
+        <option value="anxious">Anxious</option>
+        <option value="angry">Angry</option>
+        <option value="calm">Calm</option>
+        <option value="happy">Happy</option>
+      </select>
+      <div class="row">
+        <button onclick="getMoodSuggestion()">Get suggestion</button>
+        <button onclick="saveMoodEntry()">Save mood</button>
+      </div>
+      <div id="moodSuggestion" class="quote"></div>
+      <h3>Mood history</h3>
+      <ul id="moodHistory" class="list"></ul>
+    </section>
+
+    <!-- FULL INTERACTIVE CALENDAR -->
+    <section id="calendarSection" class="card">
+      <h2>Calendar</h2>
+      <div class="calendar-controls row">
+        <button onclick="prevMonth()">◀</button>
+        <div id="calendarMonthYear"></div>
+        <button onclick="nextMonth()">▶</button>
+        <button onclick="gotoToday()">Today</button>
+      </div>
+      <div id="calendar" class="calendar-grid"></div>
+
+      <div id="dayEditor" class="card small hidden">
+        <h3 id="dayEditorTitle">Notes for —</h3>
+        <textarea id="dayNote" rows="4" placeholder="Add a note or milestone"></textarea>
+        <div class="row">
+          <button onclick="saveDayNote()">Save</button>
+          <button onclick="deleteDayNote()">Delete</button>
+          <button onclick="closeDayEditor()">Close</button>
         </div>
+        <div id="dayNotesList"></div>
+      </div>
+    </section>
 
-        <div class="helplines">
-            <h3>Need Help Now?</h3>
-            <p>988 Suicide & Crisis Lifeline (US): Call or Text 988</p>
-            <p>Samaritans (UK & Ireland): Call 116 123</p>
-            <p>Lifeline (Australia): Call 13 11 14</p>
-        </div>
-    </div>
+    <!-- HELPLINES (fixed-ish) -->
+    <section class="card helpline">
+      <h3>Need Help Now?</h3>
+      <p><strong>US/Canada:</strong> 988 — Call or Text</p>
+      <p><strong>UK & Ireland:</strong> Samaritans 116 123</p>
+      <p><strong>Australia:</strong> Lifeline 13 11 14</p>
+      <p class="muted">If you are outside these regions, contact your local emergency services or health line.</p>
+    </section>
 
-    <script src="script.js"></script>
+  </main>
+
+  <footer class="footer">
+    <small>All data stored locally on your device. This app is not a replacement for professional help.</small>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
-</html>
+        </html>
